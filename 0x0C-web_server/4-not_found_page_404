@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Configure your Nginx server so that /redirect_me is
+# redirecting to another page nad handel error 404.
+sudo apt-get update
+sudo apt-get install -y nginx
+# the html file that handel error 404
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+echo "server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    root /var/www/html;
+    server_name _;
+
+    # for adding the 404.html
+    error_page 404 /404.html;
+    location = /404.html {
+        internal;
+    }
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+    location / {
+        index index.html index.nginx-debian.html;
+        }
+} " > /etc/nginx/sites-available/default
+sudo service nginx restart
