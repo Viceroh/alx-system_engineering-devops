@@ -1,4 +1,4 @@
-# configuration file
 Host *
-    IdentityFile ~/.ssh/school
-    PasswordAuthentication no
+IdentityFile ~/.ssh/school
+PasswordAuthentication no
+HostbasedAuthentication no
