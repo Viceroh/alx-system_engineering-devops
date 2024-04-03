@@ -1,6 +1,32 @@
 #!/usr/bin/env bash
-# Double the number of webservers
-sudo apt-get update
+
+#Configuring web-01 to have an HTTP response header
+
+#Updating packages sudo apt-get update
+
 sudo apt-get install -y nginx
-sudo sed -i "/listen \[::\]:80 default_server/a add_header X-Served-By $(hostname);" /etc/nginx/sites-available/default
+
+#Creating an index page
+
+echo "Hello world!" | sudo tee /var/www/html/index.html
+
+#Performing a redirection
+
+new_string="server_name\n\trewrite ^\/redirect_me https:\/\/github.com/Viceroh  permanent:"
+
+sudo sed -i "s/server_name _;/$new_string/" /etc/nginx/sites-enabled/default
+
+#Creating a custom error page
+
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
+
+#custom HTTP Response header
+sudo sed -i "server_name;/a add_header X-Served-By $HOSTNAME;" /etc/nginx/sites-enabled/default
+
+# Test for syntax errors
+
+sudo nginx -t
+
+# Restart nginx
+
 sudo service nginx restart
