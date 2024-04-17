@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# This script displays information about subdomains of a given domain
+
+get_subdomain_info() {
+    domain="$1"
+    subdomain="$2"
+    
+    if [[ -z "$subdomain" ]]; then
+        subdomains=("www" "lb-01" "web-01" "web-02")
+    else
+        subdomains=("$subdomain")
+    fi
+    
+    for sub in "${subdomains[@]}"; do
+        record_type=$(dig "$sub.$domain" | grep -A1 'ANSWER SECTION:' | awk '{ print $4 }' | tr -d '\n')
+        destination=$(dig "$sub.$domain" +short)
+        echo "The subdomain $sub is a $record_type record and points to $destination"
+    done
+}
+
+get_subdomain_info "$@"
