@@ -1,6 +1,12 @@
-# Fixes bad `phpp` extensions to `php` in the WordPress file `wp-settings.php`.
+# A script to  fix and allow unlimited traffic/requests
 
-exec { 'fix-wordpress':
-  command => 'sed -i s/phpp/php/g /var/www/html/wp-settings.php',
-  path    => '/usr/local/bin/:/bin/'
+exec {'replace':
+  provider => shell,
+  command  => 'sudo sed -i "s/ULIMIT=\"-n 15\"/ULIMIT=\"-n 4096\"/" /etc/default/nginx',
+  before   => Exec['restart'],
+}
+
+exec {'restart':
+  provider => shell,
+  command  => 'sudo service nginx restart',
 }
